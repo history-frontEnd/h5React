@@ -1,5 +1,5 @@
 <div align="center">
-<h1>DvaReact 模板</h1>
+<h1>H5 react 模板</h1>
 </div>
 
 [![React](https://img.shields.io/badge/react-^15.6.1-brightgreen.svg?style=flat-square)](https://github.com/facebook/react)
