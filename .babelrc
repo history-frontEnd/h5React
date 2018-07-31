@@ -1,0 +1,29 @@
+{
+  "presets": [
+    "react", ["env", {
+      "loose": true,
+        "targets": {
+          "browsers": ["last 2 versions", "safari >= 7"]
+        }
+    }], "stage-0"
+  ],
+  "plugins": [
+    "add-module-exports",
+    "transform-decorators-legacy",
+    ["transform-runtime", {
+      "helpers": false,
+      "polyfill": false,
+      "regenerator": true
+    }],
+    ["import", { "libraryName": "antd-mobile", "style": true }]
+  ],
+  "env": {
+    "development":{
+      "plugins": [
+        "dva-hmr"
+      ]
+    },
+    "production": {
+    }
+  }
+}

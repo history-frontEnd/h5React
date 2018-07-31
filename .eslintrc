@@ -1,0 +1,26 @@
+{
+  "parser": "babel-eslint",
+  "extends": "standard",
+  "plugins": [
+    "html",
+    "react",
+    "flowtype"
+  ],
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "no-mixed-operators":"off",
+    "no-extend-native":"off",
+    "comma-dangle":"off",
+    "camelcase": 1,
+    "react/prop-types": 2,
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error"
+  },
+  "settings": {
+    "flowtype": {
+      "onlyFilesWithFlowAnnotation": true
+    }
+  }
+}
