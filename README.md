@@ -43,7 +43,7 @@ $ npm start
 │ ├── admin-entry.js  # 运营后台入口
 │ ├── web-entry.js    # web入口
 │ ├── _polyfill.js    # 依赖代码
-│ └── _tpl.html       # 模版文件
+│ └── _web.html       # 模版文件
 ├── /test/            # 测试目录
 ├── config.mock.js    # mock配置
 ├── package.json      # 项目信息
