@@ -1,8 +1,6 @@
 import 'core-js/fn/promise'
 import 'react'
 import 'react-dom'
-import 'dva'
-import 'dva-loading'
 import initReactFastclick from 'react-fastclick'
 initReactFastclick()
 

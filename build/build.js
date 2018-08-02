@@ -1,3 +1,4 @@
+require('shelljs/global')
 const { test, rm } = require('shelljs')
 const webpack = require('webpack')
 const webpackcfg = require('./webpack.config')

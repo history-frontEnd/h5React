@@ -1,3 +1,4 @@
+require('shelljs/global')
 const Koa = require('koa')
 const webpack = require('webpack')
 const webpackHotMiddleware = require('webpack-hot-middleware')
@@ -5,7 +6,6 @@ const webpackDevMiddleware = require('webpack-dev-middleware')
 const history = require('koa-connect-history-api-fallback')
 const webpackcfg = require('./webpack.config')
 const proxyMiddleware = require('./proxy')
-
 const app = new Koa()
 const compiler = webpack(webpackcfg)
 const koaHotMiddleware = webpackHotMiddleware(compiler)
