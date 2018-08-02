@@ -39,31 +39,16 @@ html, body {
   height: 100%;
 }
 body {
-  width: 10rem;
-  margin: 0 auto;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
 }
 #app, .web-container {
   height: 100%;
   overflow-y: scroll;
-  width: 10rem;
 }
 .clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden}
 .clearfix{*height:1%;}
-.spin-mask {
-  z-index: 999;
-  position: fixed;
-  height: 100%;
-  width: 100%;
-  background: #000;
-  opacity: .9;
-}
-.ant-spin {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 400px;
-}
 .saas-primary-btn {
   margin: 0 auto;
   text-align: center;

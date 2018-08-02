@@ -1,13 +1,44 @@
+/**
+ * 工具类、实用函数
+ */
+
 import {
   isPord,
   isDebug
 } from 'utils/config'
 
+/**
+ * 获取当前url中key对应的value
+ * @param name
+ */
 const queryURL = (name: string) : ?string => {
   let reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`, 'i')
   let r = window.location.search.substr(1).match(reg)
   if (r != null) return decodeURI(r[2])
   return null
+}
+
+/**
+ * 获取url的查询对象，必须包含‘?’
+ * @param url 可选，默认为当前location地址
+ */
+export function getUrlQuery (url) {
+  url = url || window.location.href
+  let query = {}
+
+  if (typeof url === 'string' && url.length) {
+    url = url.indexOf('?') > -1 ? url.replace(/\S*\?/, '') : ''
+
+    let params = url.split('&')
+    let length = params.length
+
+    for (let i = 0; i < length; i++) {
+      let param = params[i].replace(/#\S+/g, '').split('=')
+      query[decodeURIComponent(param[0])] = decodeURIComponent(param[1]) || ''
+    }
+  }
+
+  return query
 }
 
 const Debug = (msg) => {

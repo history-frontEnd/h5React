@@ -20,6 +20,6 @@ Web.propTypes = {
   location: PropTypes.object,
   dispatch: PropTypes.func,
   app: PropTypes.object,
-  loading: PropTypes.object
+  ui: PropTypes.object
 }
-export default withRouter(connect(({app, loading}) => ({app, loading}))(Web))
+export default withRouter(connect(({app}) => ({app}))(Web))

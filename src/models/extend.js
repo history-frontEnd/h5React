@@ -1,5 +1,3 @@
-import modelExtend from 'dva-model-extend'
-
 const model = {
   reducers: {
     update (state, { payload }) {
@@ -9,15 +7,7 @@ const model = {
       }
     },
   },
-  subscriptions: {
-    // setup ({ dispatch, history }) {
-    //   history.listen((location) => {
-    //     dispatch({
-    //       type: '@@dva/UPDATE'
-    //     })
-    //   })
-    // }
-  },
+  subscriptions: {},
   effects: {
     * updateState ({ payload = {} }, { call, put }) {
       yield put({ type: 'update', payload })
@@ -25,37 +15,4 @@ const model = {
   }
 }
 
-const pageModel = modelExtend(model, {
-
-  state: {
-    list: [],
-    pagination: {
-      // showSizeChanger: true,
-      showQuickJumper: true,
-      showTotal: total => `共 ${total} 条`,
-      current: 1,
-      total: 0,
-      pageSize: 15
-    },
-  },
-
-  reducers: {
-    querySuccess (state, { payload }) {
-      const { list, pagination } = payload
-      return {
-        ...state,
-        list,
-        pagination: {
-          ...state.pagination,
-          ...pagination,
-        },
-      }
-    },
-  },
-
-})
-
-module.exports = {
-  model,
-  pageModel,
-}
+module.exports = {model}
