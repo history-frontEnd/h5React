@@ -1,5 +1,4 @@
-/* globals ls */
-const path = require('path')
+const join = require('path').join
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
@@ -10,40 +9,48 @@ const pxtorem = require('postcss-pxtorem');
 const autoprefixer = require('autoprefixer');
 const compressionPlugin = require('compression-webpack-plugin');
 
-const assetsPath = (...relativePath) => path.join(__dirname, '..', ...relativePath)
+const assetsPath = (...relativePath) => join(__dirname, '..', ...relativePath)
 const isFontFile = url => /\.(woff2?|eot|ttf|otf)(\?.*)?$/.test(url)
 const isProd = process.env.BABEL_ENV === 'production'
 const isReport = process.env.REPORT === 'true'
-
 const postCssPlugins = [
   autoprefixer({
     browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 8', 'iOS >= 8', 'Android >= 4'],
-  }),
-  pxtorem({ rootValue: 75, propWhiteList: [] })
+  })
 ]
+const target = process.env.TARGET ? process.env.TARGET : 'admin'
+if (target === 'web') {
+  postCssPlugins.push(pxtorem({ rootValue: 75, propWhiteList: [] }))
+}
 
-let entryObj = {}
-let invalidEntry = []
-const entryGlobs = 'src/pages/**/entry.js'
-ls(entryGlobs).forEach(file => {
-  let folder = path.dirname(file)
-  let includLen = ls(folder).filter(file => ['entry.js', 'tpl.pug'].includes(path.basename(file))).length
-  if (includLen === ['entry.js', 'tpl.pug'].length) {
-    entryObj[`${path.basename(folder)}`] = `./${path.relative(process.cwd(), file)}`
-  } else {
-    invalidEntry.push(folder)
+const getEntry = (target) => {
+  let entry = {
+    [target]: [assetsPath(`src/${target}-entry`)],
+    'polyfill': [assetsPath(`src/_polyfill`)]
   }
-})
+  return Object.keys(entry).reduce((entry, key) => ({
+    ...entry,
+    [key]: isProd ? entry[`${key}`] : entry[`${key}`].concat(['webpack-hot-middleware/client'])
+  }), entry)
+}
+
+const getOutput = (target) => {
+  return Object.assign({}, {
+    path: assetsPath(`dist/${target}`),
+    filename: '[name].js',
+    chunkFilename: '[name].chunk.js',
+    publicPath: '/'
+  }, isProd ? {
+    filename: 'js/[name].[chunkhash:7].js',
+    chunkFilename: 'js/[name].chunk.[chunkhash:7].js'
+  } : {})
+}
 
 let webpackConfig = {
   mode: isProd ? 'production' : 'development',
   devtool: isProd ? false : 'cheap-module-source-map',
-  entry: entryObj,
-  output: {
-    path: assetsPath('dist'),
-    filename: '[name].[hash:8].js',
-    publicPath: '/'
-  },
+  entry: getEntry(target),
+  output: getOutput(target),
   resolve: {
     extensions: ['.web.js', '.js', '.json', '.web.jsx', '.jsx'],
     modules: [
@@ -60,17 +67,17 @@ let webpackConfig = {
       'themes': assetsPath('src/themes'),
       'utils': assetsPath('src/utils')
     }, {
-      // 'react': 'anujs',
-      // 'react-dom': 'anujs',
-      // // 若要兼容 IE 请使用以下配置
-      // // 'react': 'anujs/dist/ReactIE',
-      // // 'react-dom': 'anujs/dist/ReactIE',
-      // // 如果引用了 prop-types 或 create-react-class
-      // // 需要添加如下别名
-      // 'prop-types': 'anujs/lib/ReactPropTypes',
-      // 'create-react-class': 'anujs/lib/createClass',
-      // //如果你在移动端用到了onTouchTap事件
-      // 'react-tap-event-plugin': 'anujs/lib/injectTapEventPlugin',
+      'react': 'anujs',
+      'react-dom': 'anujs',
+      // 若要兼容 IE 请使用以下配置
+      // 'react': 'anujs/dist/ReactIE',
+      // 'react-dom': 'anujs/dist/ReactIE',
+      // 如果引用了 prop-types 或 create-react-class
+      // 需要添加如下别名
+      'prop-types': 'anujs/lib/ReactPropTypes',
+      'create-react-class': 'anujs/lib/createClass',
+      //如果你在移动端用到了onTouchTap事件
+      'react-tap-event-plugin': 'anujs/lib/injectTapEventPlugin',
     })
   },
   module: {
@@ -147,10 +154,6 @@ let webpackConfig = {
         outputPath: url => `${isFontFile(url) ? 'fonts' : 'media'}/${url}`,
         publicPath: url => `${isFontFile(url) ? '../' : './'}${url}`
       }
-    },
-    {
-      test: /\.pug$/,
-      loader: 'pug-loader'
     }]
   },
   optimization: {
@@ -194,7 +197,26 @@ let webpackConfig = {
     new MiniCssExtractPlugin({
       filename: isProd ? '[name].[hash].css' : '[name].css',
       chunkFilename: isProd ? '[name].[hash].css' : '[name].css'
-    })
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      minify: isProd ? {
+        html5: false,
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true,
+      } : {},
+      // chunks: (isProd ? ['manifest'] : ['manifest']).concat([target, 'vendor2']),
+      filename: `index.html`,
+      template: assetsPath(`src/_${target}.html`)
+    }),
   ].concat(isProd ? [
     new compressionPlugin({
       asset: '[path].gz[query]',
@@ -214,20 +236,6 @@ let webpackConfig = {
     tls: 'empty',
   }
 }
-
-Object.keys(webpackConfig.entry).forEach(entry => {
-  webpackConfig.plugins.push(
-    new HtmlWebpackPlugin({
-      chunks: ['manifest', 'vendor', entry, '_polyfill', '_whm'],
-      filename: `${entry}.html`,
-      template: `./src/pages/${entry}/tpl.pug`
-    }))
-})
-entryObj['_polyfill'] = [assetsPath(`src/_polyfill`)]
-if (!isProd) {
-  entryObj['_whm'] = ['webpack-hot-middleware/client']
-}
-console.log(entryObj)
 
 isReport && webpackConfig.plugins.push(new BundleAnalyzerPlugin())
 module.exports = webpackConfig

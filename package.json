@@ -1,25 +1,34 @@
 {
   "private": true,
   "scripts": {
-    "start": "npm run dev",
-    "dev": "cross-env PORT=8000 BABEL_ENV=development node build/serv.js",
-    "clean": "echo  \"require('shelljs').rm('-rf', 'dist')\" | node",
-    "build": "cross-env NODE_ENV=production BABEL_ENV=production  node build/build.js",
-    "report": "cross-env REPORT=true npm run build",
-    "prod": "cross-env PORT=8003 node build/staticServe.js"
+    "start": "npm run dev:web",
+    "dev:web": "cross-env TARGET=web PORT=8000 BABEL_ENV=development node build/serv.js",
+    "dev": "run-p dev:**",
+    "clean:web": "echo  \"require('shelljs').rm('-rf', 'dist/web')\" | node",
+    "clean": "run-p clean:**",
+    "build:web": "cross-env TARGET=web NODE_ENV=production BABEL_ENV=production  node build/build.js",
+    "build": "cross-env npm run clean && run-p build:**",
+    "report:web": "cross-env REPORT=true npm run build:web",
+    "web": "cross-env TARGET=web PORT=8003 node build/staticServe.js"
   },
   "dependencies": {
     "antd-mobile": "^2.2.2",
     "anujs": "^1.4.6",
     "axios": "^0.18.0",
     "co": "^4.6.0",
+    "dva": "^2.1.0",
+    "dva-immer": "^0.2.1",
+    "dva-loading": "^2.0.3",
+    "dva-model-extend": "^0.1.2",
     "nprogress": "^0.2.0",
+    "rc-form": "^2.2.1",
+    "rc-util": "4.5.1",
     "react": "^16.2.0",
     "react-addons-shallow-compare": "^15.6.2",
     "react-dom": "^16.2.0",
+    "weixin-js-sdk": "^1.3.3",
     "react-fastclick": "^3.0.2",
-    "styled-components": "^3.3.3",
-    "weixin-js-sdk": "^1.3.3"
+    "styled-components": "^3.3.3"
   },
   "devDependencies": {
     "autoprefixer": "^8.6.3",
@@ -69,8 +78,6 @@
     "optimize-css-assets-webpack-plugin": "^5.0.0",
     "postcss-loader": "^2.1.5",
     "postcss-pxtorem": "^4.0.1",
-    "pug": "^2.0.3",
-    "pug-loader": "^2.4.0",
     "redbox-react": "^1.6.0",
     "request": "^2.87.0",
     "roadhog": "^2.0.0",
