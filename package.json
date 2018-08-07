@@ -1,15 +1,12 @@
 {
   "private": true,
   "scripts": {
-    "start": "npm run dev:web",
-    "dev:web": "cross-env TARGET=web PORT=8000 BABEL_ENV=development node build/serv.js",
-    "dev": "run-p dev:**",
-    "clean:web": "echo  \"require('shelljs').rm('-rf', 'dist/web')\" | node",
-    "clean": "run-p clean:**",
-    "build:web": "cross-env TARGET=web NODE_ENV=production BABEL_ENV=production  node build/build.js",
-    "build": "cross-env npm run clean && run-p build:**",
-    "report:web": "cross-env REPORT=true npm run build:web",
-    "web": "cross-env TARGET=web PORT=8003 node build/staticServe.js"
+    "start": "npm run dev",
+    "dev": "cross-env TARGET=web PORT=8000 BABEL_ENV=development node build/serv.js",
+    "clean": "echo  \"require('shelljs').rm('-rf', 'dist/web')\" | node",
+    "build": "cross-env TARGET=web NODE_ENV=production BABEL_ENV=production  node build/build.js",
+    "report": "cross-env REPORT=true npm run build",
+    "test": "cross-env TARGET=web PORT=8003 node build/staticServe.js"
   },
   "dependencies": {
     "antd-mobile": "^2.2.2",
