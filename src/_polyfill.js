@@ -3,9 +3,11 @@ import 'react'
 import 'react-dom'
 import 'dva'
 import 'dva-loading'
-import initReactFastclick from 'react-fastclick'
-initReactFastclick()
+import FastClick from 'fastclick'
 
+if (document.body) {
+  FastClick.attach(document.body)
+}
 // 连字符转驼峰
 String.prototype.hyphenToHump = function () {
   return this.replace(/-(\w)/g, (...args) => {
